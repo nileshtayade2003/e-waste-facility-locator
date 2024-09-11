@@ -1,0 +1,50 @@
+
+/* hero section styles */
+.main-content {
+  margin-top: 70px;
+}
+
+.hero-section {
+  position: relative;
+}
+
+.hero-section .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.hero-section .content {
+  position: relative;
+  z-index: 1;
+}
+
+.map-section {
+  margin-top: 30px;
+}
+
+.search-bar {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+
+/* footer  styles */
+footer {
+  background-color: #343a40;
+  color: #fff;
+}
+
+footer a {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+footer a:hover {
+  color: #17a2b8;
+}
+
+
