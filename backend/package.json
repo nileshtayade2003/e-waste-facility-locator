@@ -1,0 +1,13 @@
+{
+  "name": "e-waste-api",
+  "version": "1.0.0",
+  "description": "This is the bakend of our e-waste facility locator application",
+  "main": "index.js",
+  "type":"module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"nodemon index.js"
+  },
+  "author": "Nilesh Liladhar Tayade",
+  "license": "ISC"
+}

@@ -1,0 +1,93 @@
+import React, { useRef, useEffect, useState } from 'react';
+import maplibregl from 'maplibre-gl';
+import { GeocodingControl } from "@maptiler/geocoding-control/react";
+import { createMapLibreGlMapController } from "@maptiler/geocoding-control/maplibregl-controller";
+import "@maptiler/geocoding-control/style.css";
+import 'maplibre-gl/dist/maplibre-gl.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
+export default function Map() {
+  const mapContainer = useRef(null);
+  const map = useRef(null);
+  const [lng, setLng] = useState(75.5626); // Updated to Jalgaon's initial longitude
+  const [lat, setLat] = useState(21.0077); // Updated to Jalgaon's initial latitude
+  const [zoom, setZoom] = useState(14);    // Initial zoom level
+  const API_KEY = 'lFtFxhaRa2OgY3I2UIQM';
+  const [mapController, setMapController] = useState();
+
+  // Example locations (Jalgaon locations)
+  const locations = [
+    { lng: 75.5627, lat: 21.0183, name: "Jalgaon Railway Station" }, // Jalgaon Railway Station
+    { lng: 75.5762, lat: 21.0057, name: "Mahatma Gandhi Garden" },   // Mahatma Gandhi Garden
+    { lng: 75.5633, lat: 21.0112, name: "Jalgaon Municipal Corporation" }, // Jalgaon Municipal Corporation
+    { lng: 75.5849, lat: 21.0284, name: "Bahinabai Udyan" },          // Bahinabai Udyan
+    { lng: 75.5765, lat: 21.0082, name: "Khandesh Central Mall" },    // Khandesh Central Mall
+  ];
+
+  useEffect(() => {
+    if (map.current) return; // Stops map from initializing more than once
+
+    // Initialize the map with Jalgaon's coordinates
+    map.current = new maplibregl.Map({
+      container: mapContainer.current,
+      style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${API_KEY}`,
+      center: [lng, lat],  // Set initial center to Jalgaon
+      zoom: zoom
+    });
+
+    map.current.addControl(new maplibregl.NavigationControl(), 'top-right');
+    setMapController(createMapLibreGlMapController(map.current, maplibregl));
+
+    // Try to get the user's current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLng = position.coords.longitude;
+          const userLat = position.coords.latitude;
+          setLng(userLng);
+          setLat(userLat);
+          map.current.setCenter([userLng, userLat]); // Update the map center to current location
+          
+          // Add a marker at the user's location
+          new maplibregl.Marker({ color: 'red' })
+            .setLngLat([userLng, userLat])
+            .addTo(map.current);
+        },
+        () => {
+          console.log('Error fetching the current location');
+        }
+      );
+    } else {
+      console.log('Geolocation is not supported by this browser.');
+    }
+
+    // Add markers for all locations in the list
+    locations.forEach(location => {
+      new maplibregl.Marker({ color: 'blue' }) // Blue marker for locations
+        .setLngLat([location.lng, location.lat])
+        .setPopup(
+          new maplibregl.Popup({ offset: 25 }) // Popup with location name
+            .setHTML(`
+              <h6>${location.name}</h6>
+              <a class='btn btn-success' href='/book-appointment/'>book appointment</a>
+              `)
+        )
+        .addTo(map.current);
+    });
+
+  }, [API_KEY, lng, lat, zoom]);
+
+  return (
+    <div className="container my-5">
+      <h2 className="text-center mb-4">Find E-Waste Collection Centers Near You</h2>
+      <div className="row justify-content-center">
+        <div className="col-md-12">
+          <div className="geocoding mb-3">
+            <GeocodingControl apiKey={API_KEY} mapController={mapController} />
+          </div>
+          <div ref={mapContainer} className="map" style={{ height: '500px', width: '100%' }} />
+        </div>
+      </div>
+    </div>
+  );
+}

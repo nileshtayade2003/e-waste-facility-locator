@@ -10,6 +10,7 @@ import BookAppointment from '../pages/User/BookAppointment';
 import ECenterDashboard from '../pages/center/Dashboard';
 import ManageAppointments from '../pages/center/ManageAppointments';
 import HeaderFooter from '../pages/user/HeaderFooter';
+import NotFoundPage from '../components/NotFoundPage';
 
 function AppRoutes() {
   return (
@@ -34,7 +35,9 @@ function AppRoutes() {
         <Route path="/center/manage-appointments" element={<ManageAppointments />} />
 
         {/* 404 rote */}
-        <Route path="*" element={<div>404 Page Not Found</div>} />
+        <Route path='*' element={<HeaderFooter/>}>
+          <Route path="*" element={<NotFoundPage/>} />
+        </Route>
       </Routes>
     </Router>
   );

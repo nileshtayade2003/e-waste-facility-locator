@@ -1,50 +1,74 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from 'axios'
+
 
 const Articles = () => {
-  // Sample article data
-  const articles = [
-    {
-      title: "The Importance of E-Waste Recycling",
-      summary:
-        "E-waste recycling is crucial for reducing environmental impact and conserving resources. Learn why it matters and how you can contribute.",
-      link: "/articles/importance-of-e-waste-recycling",
-    },
-    {
-      title: "How to Properly Dispose of Old Electronics",
-      summary:
-        "Disposing of old electronics requires careful handling to ensure they are processed correctly. Discover the best practices for safe disposal.",
-      link: "/articles/proper-disposal-of-electronics",
-    },
-    {
-      title: "The Benefits of Recycling Rare Earth Metals",
-      summary:
-        "Rare earth metals are essential for many technologies. Recycling them can reduce environmental damage and save resources.",
-      link: "/articles/recycling-rare-earth-metals",
-    },
-    // Add more articles as needed
-  ];
+  const [articles,setArticles] = useState([]);
+  const [loading,setLoading] = useState(false);
+
+  // article data getting from news api.org
+  useEffect( ()=>{
+    const getArticles =async ()=>{
+      try {
+        setLoading(true);
+        const response = await axios.get('https://newsapi.org/v2/everything?q=e-waste&apiKey=1d20ee841f36402c9f2f978907e3bc04')
+        console.log(response.data.articles)
+        setArticles(response.data.articles)
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log(error.message)
+      }
+    }
+    getArticles();
+  },[])
+  
 
   return (
-    <div className="container mt-5"   >
-    <div className="mt-5" >
-      <h2 className="mb-4 text-center " style={{ marginTop: '70px' }}>Articles</h2>
-      <div className="row">
-        {articles.map((article, index) => (
-          <div key={index} className="col-md-4 mb-4">
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">{article.title}</h5>
-                <p className="card-text">{article.summary}</p>
-                <a href={article.link} className="btn btn-primary">
-                  Read More
-                </a>
-              </div>
+    <div className="container mt-5">
+      <div className="mt-5">
+        <h2 className="mb-4 text-center" style={{ marginTop: "70px" }}>
+          Articles
+        </h2>
+        <div className="row">
+          {loading ? (
+           <div className="col-12 text-center">
+             <div class="spinner-border text-primary mt-4 mb-4" style={{ width: '3rem', height: '3rem' }} role="status">
+              <span class="sr-only"> </span>
             </div>
-          </div>
-        ))}
+           </div>
+          ) : (
+            articles.slice(0, 9).map((article, index) => (
+              <div key={index} className="col-md-4 mb-4">
+                <div className="card">
+                  <img
+                    src={article.urlToImage}
+                    className="card-img-top"
+                    alt={article.title}
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title">{article.title}</h5>
+                    <p className="card-text">
+                      {article.description.length > 100
+                        ? `${article.description.substring(0, 100)}...`
+                        : article.description}
+                    </p>
+                    <a
+                      href={article.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary"
+                    >
+                      Read More
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
-  </div>
   );
 };
 

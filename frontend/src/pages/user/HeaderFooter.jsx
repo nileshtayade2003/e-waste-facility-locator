@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet } from 'react-router-dom'
 import './style.css'
 
 const HeaderFooter = () => {
@@ -7,7 +7,8 @@ const HeaderFooter = () => {
     <div>
          
       {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    
+  <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div className="container">
         <Link className="navbar-brand" to="/">
           E-Waste Management
@@ -26,25 +27,24 @@ const HeaderFooter = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="/">
+              <NavLink className="nav-link" to="/">
                 Home
-              </Link>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/book-appointment">
+              <NavLink className="nav-link" to="/book-appointment">
                 Book Appointment
-              </Link>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/articles">
+              <NavLink className="nav-link" to="/articles">
                 Articles
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-
     <Outlet/>
 
     {/* footer */}
