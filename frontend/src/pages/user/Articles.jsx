@@ -12,7 +12,6 @@ const Articles = () => {
       try {
         setLoading(true);
         const response = await axios.get('https://newsapi.org/v2/everything?q=e-waste&apiKey=1d20ee841f36402c9f2f978907e3bc04')
-        console.log(response.data.articles)
         setArticles(response.data.articles)
         setLoading(false);
       } catch (error) {
@@ -33,8 +32,8 @@ const Articles = () => {
         <div className="row">
           {loading ? (
            <div className="col-12 text-center">
-             <div class="spinner-border text-primary mt-4 mb-4" style={{ width: '3rem', height: '3rem' }} role="status">
-              <span class="sr-only"> </span>
+             <div className="spinner-border text-primary mt-4 mb-4" style={{ width: '3rem', height: '3rem' }} role="status">
+              <span className="sr-only"> </span>
             </div>
            </div>
           ) : (

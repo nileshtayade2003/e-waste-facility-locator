@@ -1,6 +1,7 @@
 import React from 'react';
 import './style.css';
 import Map from '../../components/user/Map';
+import SetMapLocation from '../../components/user/SetMapLocation';
 
 const Home = () => {
 
@@ -20,6 +21,8 @@ const Home = () => {
         </section>
 
         <Map/>
+
+        {/* <SetMapLocation/> */}
         
       </main>
     

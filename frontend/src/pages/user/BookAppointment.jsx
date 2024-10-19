@@ -45,125 +45,133 @@ const BookAppointment = () => {
     return (
       <div className="container mt-5">
       <div className="row justify-content-center">
-        <div className="col-lg-6 col-md-8 col-sm-12">
+        <div className="col-lg-8 col-md-10 col-sm-12">
           <h2 className="mb-4 text-center mt-3">Book Appointment</h2>
           <form onSubmit={handleSubmit}>
-            {/* Name */}
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
+            <div className="row">
+              {/* Name */}
+              <div className="col-md-6 mb-3">
+                <label htmlFor="name" className="form-label">Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+    
+              {/* Email */}
+              <div className="col-md-6 mb-3">
+                <label htmlFor="email" className="form-label">Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
-
-            {/* Email */}
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
+    
+            <div className="row">
+              {/* Mobile */}
+              <div className="col-md-6 mb-3">
+                <label htmlFor="mobile" className="form-label">Mobile Number</label>
+                <input
+                  type="tel"
+                  className="form-control"
+                  id="mobile"
+                  name="mobile"
+                  value={formData.mobile}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+    
+              {/* Address */}
+              <div className="col-md-6 mb-3">
+                <label htmlFor="address" className="form-label">Address</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
-
-            {/* Mobile */}
-            <div className="mb-3">
-              <label htmlFor="mobile" className="form-label">Mobile Number</label>
-              <input
-                type="tel"
-                className="form-control"
-                id="mobile"
-                name="mobile"
-                value={formData.mobile}
-                onChange={handleChange}
-                required
-              />
+    
+            <div className="row">
+              {/* Product Name */}
+              <div className="col-md-6 mb-3">
+                <label htmlFor="productName" className="form-label">Product Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="productName"
+                  name="productName"
+                  value={formData.productName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+    
+              {/* E-Waste Collection Center Dropdown */}
+              <div className="col-md-6 mb-3">
+                <label htmlFor="eWasteCenter" className="form-label">Select E-Waste Collection Center</label>
+                <select
+                  className="form-select"
+                  id="eWasteCenter"
+                  name="eWasteCenter"
+                  value={formData.eWasteCenter}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Choose...</option>
+                  {eWasteCenters.map((center, index) => (
+                    <option key={index} value={center}>{center}</option>
+                  ))}
+                </select>
+              </div>
             </div>
-
-            {/* Address */}
-            <div className="mb-3">
-              <label htmlFor="address" className="form-label">Address</label>
-              <input
-                type="text"
-                className="form-control"
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                required
-              />
+    
+            <div className="row">
+              {/* Appointment Date */}
+              <div className="col-md-6 mb-3">
+                <label htmlFor="appointmentDate" className="form-label">Appointment Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="appointmentDate"
+                  name="appointmentDate"
+                  value={formData.appointmentDate}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+    
+              {/* Appointment Time */}
+              <div className="col-md-6 mb-3">
+                <label htmlFor="appointmentTime" className="form-label">Appointment Time</label>
+                <input
+                  type="time"
+                  className="form-control"
+                  id="appointmentTime"
+                  name="appointmentTime"
+                  value={formData.appointmentTime}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
-
-            {/* Product Name */}
-            <div className="mb-3">
-              <label htmlFor="productName" className="form-label">Product Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="productName"
-                name="productName"
-                value={formData.productName}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* E-Waste Collection Center Dropdown */}
-            <div className="mb-3">
-              <label htmlFor="eWasteCenter" className="form-label">Select E-Waste Collection Center</label>
-              <select
-                className="form-select"
-                id="eWasteCenter"
-                name="eWasteCenter"
-                value={formData.eWasteCenter}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Choose...</option>
-                {eWasteCenters.map((center, index) => (
-                  <option key={index} value={center}>{center}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Appointment Date */}
-            <div className="mb-3">
-              <label htmlFor="appointmentDate" className="form-label">Appointment Date</label>
-              <input
-                type="date"
-                className="form-control"
-                id="appointmentDate"
-                name="appointmentDate"
-                value={formData.appointmentDate}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* Appointment Time */}
-            <div className="mb-3">
-              <label htmlFor="appointmentTime" className="form-label">Appointment Time</label>
-              <input
-                type="time"
-                className="form-control"
-                id="appointmentTime"
-                name="appointmentTime"
-                value={formData.appointmentTime}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
+    
             {/* Photo Upload */}
             <div className="mb-3">
               <label htmlFor="photo" className="form-label">Upload Photo of Product</label>
@@ -176,13 +184,14 @@ const BookAppointment = () => {
                 required
               />
             </div>
-
+    
             {/* Submit Button */}
             <button type="submit" className="btn btn-primary w-100">Book Appointment</button>
           </form>
         </div>
       </div>
     </div>
+    
   )
 }
 

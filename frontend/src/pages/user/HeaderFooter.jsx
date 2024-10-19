@@ -93,4 +93,4 @@ const HeaderFooter = () => {
   )
 }
 
-export default HeaderFooter
+export default HeaderFooter;
