@@ -44,23 +44,49 @@ const AddCenter = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Get token
+    const token = localStorage.getItem("adminToken"); // Get token from local storage
+  
+    if (!token) {
+      console.error("No token found. Please log in.");
+      return;
+    }
+  
     const data = new FormData();
     data.append("name", formData.name);
     data.append("email", formData.email);
     data.append("password", formData.password);
     data.append("phone", formData.phone);
     data.append("address", formData.address);
-    data.append("latitude", formData.latitude);
-    data.append("longitude", formData.longitude);
-    data.append("image", formData.image);
-
+    data.append("lat", formData.latitude);  
+    data.append("lng", formData.longitude);
+  
+    // Only append the image if it's selected
+    if (formData.image) {
+      data.append("image", formData.image);
+    }
+  
+    
+  
     try {
-      const response = await axios.post("/api/add-center", data);
-      console.log(response.data);
+      const response = await axios.post("http://localhost:5000/api/admin/add-center", data, {
+        headers: {
+          "Authorization": `Bearer ${token}`, // Send token with Bearer
+          "Content-Type": "multipart/form-data", // Ensure the correct content type
+        },
+      });
+      alert(response.data.message || "Center added successfully!"); 
     } catch (error) {
-      console.error("Error submitting form:", error);
+      if (error.response) {
+        // Show error message from the server
+        alert(error.response.data.message || "Something went wrong!");
+      } else {
+        alert("Network error. Please try again.");
+      }
     }
   };
+  
 
   useEffect(() => {
     if (!mapLoaded) {

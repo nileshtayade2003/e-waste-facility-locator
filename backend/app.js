@@ -4,7 +4,10 @@ const connectDB = require('./config/db');  // Import the DB connection function
 const adminRoutes = require('./routes/adminRoutes');  // Admin routes
 const centerRoutes = require('./routes/centerRoutes');  // Admin routes
 const userRoutes = require('./routes/userRoutes');  // Admin routes
+const cors = require('cors');
 // const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+
+
 
 // Load environment variables
 require('dotenv').config();
@@ -14,6 +17,12 @@ require('dotenv').config();
 connectDB();
 
 const app = express();
+
+// Enable CORS for all origins
+app.use(cors());
+
+// OR Enable CORS for a specific origin
+// app.use(cors({ origin: 'http://localhost:5173' }));
 
 // Middleware to parse incoming JSON requests
 app.use(express.json());

@@ -1,26 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const AdminLogin = () => {
+
+const CenterLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (localStorage.getItem('centerToken')) {
+      navigate('/center'); // Redirect if already logged in
+    }
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here, like making an API call
-    console.log('Email:', email);
-    console.log('Password:', password);
+    setError('');
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/center/login', {
+        email,
+        password,
+      });
+
+      const { token } = response.data;
+
+      // Store token in localStorage
+      localStorage.setItem('centerToken', token);
+
+      // Redirect to center dashboard
+      navigate('/center');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
+    }
   };
 
   return (
     <div className="hold-transition login-page">
       <div className="login-box">
         <div className="login-logo">
-          <a href="/"><b>Center</b>LOGIN</a>
+          <a href="/"><b>Center</b> LOGIN</a>
         </div>
 
         <div className="card">
           <div className="card-body login-card-body">
-            <p className="login-box-msg">Sign in to start your session</p>
+            <p className="login-box-msg">Sign in to access center panel</p>
+
+            {error && <p className="text-danger">{error}</p>}
 
             <form onSubmit={handleSubmit}>
               <div className="input-group mb-3">
@@ -71,7 +99,7 @@ const AdminLogin = () => {
               <a href="#">Forgot password?</a>
             </p>
             <p className="mb-0">
-              <a href="#" className="text-center">Register a new account</a>
+              <a href="#" className="text-center">Register a new center</a>
             </p>
           </div>
         </div>
@@ -80,4 +108,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default CenterLogin;

@@ -43,6 +43,7 @@ const centerSchema = new mongoose.Schema({
     image: {
         type: String,
         required: false // If required, you can set it to true
+        ,default:null
     }
 }, {
     timestamps: true

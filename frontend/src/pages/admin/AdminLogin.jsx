@@ -1,14 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (localStorage.getItem('adminToken')) {
+      navigate('/admin'); // Redirect if already logged in
+    }
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here, like making an API call
-    console.log('Email:', email);
-    console.log('Password:', password);
+    setError('');
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/admin/login', {
+        email,
+        password,
+      });
+
+      
+      const { token } = response.data;
+
+      
+
+      // Store token in localStorage
+      localStorage.setItem('adminToken', token);
+
+      // Redirect to the dashboard
+      navigate('/admin')
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
+    }
   };
 
   return (
@@ -21,6 +51,8 @@ const AdminLogin = () => {
         <div className="card">
           <div className="card-body login-card-body">
             <p className="login-box-msg">Sign in to start your session</p>
+
+            {error && <p className="text-danger">{error}</p>}
 
             <form onSubmit={handleSubmit}>
               <div className="input-group mb-3">

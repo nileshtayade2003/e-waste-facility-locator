@@ -1,6 +1,11 @@
 // Navbar.js
 import React from "react";
 
+const handleLogout = () => {
+  localStorage.removeItem('centerToken'); // For Center Logout
+  window.location.href = '/center/login'; // Redirect to login
+};
+
 
 const Navbar = () => {
   return (
@@ -89,7 +94,7 @@ const Navbar = () => {
           </a>
           <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
             <a href="#" className="dropdown-item">Profile</a>
-            <a href="#" className="dropdown-item">Sign Out</a>
+            <a onClick={handleLogout} className="dropdown-item">Sign Out</a>
           </div>
         </li>
       </ul>

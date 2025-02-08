@@ -1,0 +1,176 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import $ from "jquery"; // jQuery for DataTables
+import "datatables.net-dt";
+import "datatables.net-bs4"; // DataTables Bootstrap 4 integration
+import "admin-lte/dist/css/adminlte.min.css"; // AdminLTE styles
+import "datatables.net-bs4/css/dataTables.bootstrap4.min.css"; // DataTables styles
+import "bootstrap/dist/css/bootstrap.min.css"; // Bootstrap for modal
+import "bootstrap/dist/js/bootstrap.bundle.min.js"; // Bootstrap JS
+import { Modal } from "bootstrap"; // Import Bootstrap modal
+
+const AllCenters = () => {
+  const [centers, setCenters] = useState([]);
+  const [selectedCenter, setSelectedCenter] = useState(null); // Store selected center
+  const [modalInstance, setModalInstance] = useState(null); // Store modal instance
+  
+
+  useEffect(() => {
+    const fetchCenters = async () => {
+      try {
+        const token = localStorage.getItem("adminToken"); // Get token from storage
+
+        if (!token) {
+          console.error("No token found!");
+          return;
+        }
+
+        const response = await axios.get("http://localhost:5000/api/admin/get-centers", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setCenters(response.data);
+
+        // Initialize DataTable after data is loaded
+        setTimeout(() => {
+          $("#centersTable").DataTable();
+        }, 500);
+      } catch (err) {
+        console.error("Error fetching centers:", err.response?.data || err.message);
+      }
+    };
+
+    fetchCenters();
+
+    // Initialize Bootstrap Modal instance
+    const modalElement = document.getElementById("viewModal");
+    if (modalElement) {
+      setModalInstance(new Modal(modalElement)); // Store modal instance
+    }
+  }, []);
+
+
+// Handle View Button Click (Open Modal)
+  const handleView = (center) => {
+    setSelectedCenter(center);
+    if (modalInstance) modalInstance.show(); // Use Bootstrap's JavaScript API
+  };
+
+  // Edit Center
+  const handleEdit = (id) => {
+    console.log("Edit Center ID:", id);
+    // Implement edit functionality
+  };
+
+  // Delete Center
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this center?")) return;
+
+    try {
+      const token = localStorage.getItem("adminToken");
+      await axios.delete(`http://localhost:5000/api/admin/delete-center/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Remove the deleted center from state
+      setCenters(centers.filter((center) => center._id !== id));
+
+      console.log("Center deleted successfully");
+    } catch (error) {
+      console.error("Error deleting center:", error.response?.data || error.message);
+    }
+  };
+
+  
+  return (
+    <div className="container mt-5">
+      <h2 className="mb-4">All E-Waste Centers</h2>
+      <div className="table-responsive">
+        <table id="centersTable" className="table table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Image</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {centers.map((center) => (
+              <tr key={center._id}>
+                <td>{center.name}</td>
+                <td>{center.email}</td>
+                <td>{center.phone}</td>
+                <td>{center.address}</td>
+                <td>
+                  {center.image ? (
+                    <img src={`http://localhost:5000/uploads/${center.image}`} alt="Center" width="50" />
+                  ) : (
+                    "No Image"
+                  )}
+                </td>
+                <td>
+                  <button className="btn btn-info btn-sm me-2" onClick={() => handleView(center)}>
+                    View
+                  </button>
+                  <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(center._id)}>
+                    Edit
+                  </button>
+                  <button className="btn btn-danger btn-sm" onClick={() => handleDelete(center._id)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* View Modal */}
+      <div className="modal fade" id="viewModal" tabIndex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+        <div className="modal-dialog modal-lg">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="viewModalLabel">Center Details</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body">
+              {selectedCenter ? (
+                <div>
+                  <p><strong>Name:</strong> {selectedCenter.name}</p>
+                  <p><strong>Email:</strong> {selectedCenter.email}</p>
+                  <p><strong>Phone:</strong> {selectedCenter.phone}</p>
+                  <p><strong>Address:</strong> {selectedCenter.address}</p>
+                  {selectedCenter.image && (
+                    <div className="text-center">
+                      <img
+                        src={`http://localhost:5000/uploads/${selectedCenter.image}`}
+                        alt="Center"
+                        className="img-fluid rounded"
+                        width="200"
+                      />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p>No details available</p>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  );
+};
+
+export default AllCenters;
