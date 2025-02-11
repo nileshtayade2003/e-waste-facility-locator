@@ -27,7 +27,7 @@ function AppRoutes() {
         {/* Public Routes */}
         <Route path="/" element={<HeaderFooter />}>
           <Route index element={<UserHome />} />
-          <Route path="book-appointment" element={<BookAppointment />} />
+          <Route path="book-appointment/:centerId" element={<BookAppointment />} />
           <Route path="articles" element={<Articles />} />
         </Route>
 

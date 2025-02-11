@@ -90,7 +90,7 @@ export default function Map() {
               <p><strong>📞 Phone:</strong> ${center.phone}</p>
               <p><strong>📧 Email:</strong> ${center.email}</p>
               <p><strong>🕒 Opening Hours:</strong> 9:00 AM - 6:00 PM</p>
-              <a class="btn btn-success btn-sm" href='/book-appointment/'>Book Appointment</a>
+              <a class="btn btn-success btn-sm" href='/book-appointment/${center._id}'>Book Appointment</a>
             </div>
           `)
         )

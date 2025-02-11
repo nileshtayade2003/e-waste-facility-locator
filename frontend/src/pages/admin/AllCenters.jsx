@@ -177,7 +177,7 @@ const AllCenters = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className=" mt-5">
       <h2 className="mb-4">All E-Waste Centers</h2>
       <div className="table-responsive">
         <table id="centersTable" className="table table-striped">
