@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import "admin-lte/dist/css/adminlte.min.css"; // AdminLTE styles
-import "datatables.net-bs4/css/dataTables.bootstrap4.min.css"; // DataTables styles
+import "admin-lte/dist/css/adminlte.min.css";
+import "datatables.net-bs4/css/dataTables.bootstrap4.min.css";
 import $ from "jquery";
-import "datatables.net-bs4"; // DataTables Bootstrap 4 integration
+import "datatables.net-bs4";
 
 const ManageAppointments = () => {
   const [appointments, setAppointments] = useState([]);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
 
-  // Function to get center ID from localStorage
   const getCenterId = () => localStorage.getItem("centerId");
 
   useEffect(() => {
@@ -46,7 +46,29 @@ const ManageAppointments = () => {
       }
       $("#appointmentsTable").DataTable();
     }
-  }, [appointments]); // Run only when appointments change
+  }, [appointments]);
+
+  const handleStatusChange = async (id, status) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/appointments/${id}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("centerToken")}`,
+        },
+        body: JSON.stringify({ status }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setAppointments((prev) =>
+          prev.map((appt) => (appt._id === id ? { ...appt, status } : appt))
+        );
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
 
   return (
     <div className="card mt-5">
@@ -66,6 +88,7 @@ const ManageAppointments = () => {
                 <th>Appointment Date</th>
                 <th>Time</th>
                 <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -84,17 +107,29 @@ const ManageAppointments = () => {
                         className={`badge ${
                           appointment.status === "pending"
                             ? "badge-warning"
+                            : appointment.status === "approved"
+                            ? "badge-primary"
                             : "badge-success"
                         }`}
                       >
                         {appointment.status}
                       </span>
                     </td>
+                    <td>
+                      <button
+                        className="btn btn-info btn-sm"
+                        onClick={() => setSelectedAppointment(appointment)}
+                        data-toggle="modal"
+                        data-target="#appointmentModal"
+                      >
+                        View
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="8" className="text-center">
+                  <td colSpan="9" className="text-center">
                     No appointments found
                   </td>
                 </tr>
@@ -103,6 +138,35 @@ const ManageAppointments = () => {
           </table>
         </div>
       </div>
+
+      {/* Modal for Viewing Appointment Details */}
+      {selectedAppointment && (
+        <div className="modal fade" id="appointmentModal">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Appointment Details</h5>
+                <button className="close" data-dismiss="modal">&times;</button>
+              </div>
+              <div className="modal-body">
+                <p><strong>Name:</strong> {selectedAppointment.name}</p>
+                <p><strong>Email:</strong> {selectedAppointment.email}</p>
+                <p><strong>Mobile:</strong> {selectedAppointment.mobileNumber}</p>
+                <p><strong>Product:</strong> {selectedAppointment.productName}</p>
+                <p><strong>Appointment Date:</strong> {new Date(selectedAppointment.appointmentDate).toLocaleDateString()}</p>
+                <p><strong>Time:</strong> {selectedAppointment.appointmentTime}</p>
+                <p><strong>Status:</strong> {selectedAppointment.status}</p>
+                <img src={`http://localhost:5000/${selectedAppointment.productPhoto}`} alt="Product" className="img-fluid" />
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-success" onClick={() => handleStatusChange(selectedAppointment._id, "approved")}>Approve</button>
+                <button className="btn btn-danger" onClick={() => handleStatusChange(selectedAppointment._id, "rejected")}>Reject</button>
+                <button className="btn btn-primary" onClick={() => handleStatusChange(selectedAppointment._id, "completed")}>Mark as Completed</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
