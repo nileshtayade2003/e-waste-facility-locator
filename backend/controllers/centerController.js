@@ -63,6 +63,32 @@ exports.getCenterAppointments = async (req, res) => {
   }
 };
 
+//get appointments by status
+exports.getAppointmentsByStatus = async (req, res) => {
+  const { centerId, status } = req.params; // Get centerId and status from URL params
+
+  try {
+    // Validate status
+    const validStatuses = ["pending", "approved", "completed", "rejected"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: "Invalid status" });
+    }
+
+    // Fetch appointments with the given status for the specified center
+    const appointments = await Appointment.find({ center: centerId, status });
+
+    res.status(200).json({
+      success: true,
+      count: appointments.length,
+      appointments,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
 // Update Center Profile
 exports.updateProfile = async (req, res) => {
   const centerId = req.params.id;

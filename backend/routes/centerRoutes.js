@@ -1,5 +1,5 @@
 const express = require('express');
-const { getCenterAppointments } = require('../controllers/centerController');
+const { getCenterAppointments, getAppointmentsByStatus } = require('../controllers/centerController');
 const { loginCenter } = require('../controllers/centerController');
 const { updateProfile } = require('../controllers/centerController');
 const { approveAppointment } = require('../controllers/centerController');
@@ -12,6 +12,10 @@ router.post('/login',loginCenter)
 
 // Route to get all appointments for a specific center
 router.get('/:centerId/appointments', getCenterAppointments);
+
+// get appointment by status :pending,approved,rejected,completed
+router.get('/appointments/:centerId/:status',getAppointmentsByStatus);
+
 
 // Update center profile
 router.put('/update-center/:id', upload.single('image'), updateProfile);
