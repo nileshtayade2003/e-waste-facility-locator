@@ -16,6 +16,7 @@ import NotFoundPage from '../components/NotFoundPage';
 import ECenterLayout from '../components/e-center/ECenterLayout';
 import ProtectedRouteAdmin from '../components/ProtectedRouteAdmin';
 import ProtectedRouteCenter from '../components/ProtectedRouteCenter';
+import Dashboard from '../pages/center/Dashboard';
 
 function AppRoutes() {
   const isAdminAuthenticated = localStorage.getItem('adminToken'); // Check admin auth
@@ -46,8 +47,8 @@ function AppRoutes() {
         <Route path="/center/login" element={<CenterLogin />} />
         <Route path="/center" element={<ProtectedRouteCenter isAuth={isCenterAuthenticated} />}>
           <Route element={<ECenterLayout />}>
-            <Route index element={<ECenterDashboard />} />
-            <Route path="manage-appointments" element={<ManageAppointments />} />
+            <Route index element={<Dashboard />} />
+            <Route path="appointments" element={<ManageAppointments />} />
           </Route>
         </Route>
 

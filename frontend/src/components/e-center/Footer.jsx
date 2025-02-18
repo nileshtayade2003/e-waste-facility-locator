@@ -3,7 +3,7 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="main-footer">
+    <footer className="main-footer" style={{position:'fixed', bottom:'0',left:'0',right:'0'}}>
       <div className="float-right d-none d-sm-inline">
         Anything you want
       </div>

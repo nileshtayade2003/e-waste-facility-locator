@@ -25,10 +25,11 @@ const CenterLogin = () => {
         password,
       });
 
-      const { token } = response.data;
+      const { token,_id } = response.data;
 
       // Store token in localStorage
       localStorage.setItem('centerToken', token);
+      localStorage.setItem("centerId",_id); // Store center ID
 
       // Redirect to center dashboard
       navigate('/center');
