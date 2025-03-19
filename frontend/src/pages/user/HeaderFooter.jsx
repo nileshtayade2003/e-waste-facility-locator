@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import './style.css'
 
+
+
 const HeaderFooter = () => {
+
   return (
     <div>
          
@@ -31,14 +34,30 @@ const HeaderFooter = () => {
                 Home
               </NavLink>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <NavLink className="nav-link" to="/book-appointment">
                 Book Appointment
               </NavLink>
-            </li>
+            </li> */}
             <li className="nav-item">
               <NavLink className="nav-link" to="/articles">
                 Articles
+              </NavLink>
+            </li>
+
+            <li className="nav-item">
+              <NavLink className="nav-link" to='/logout'>
+                Logout
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/register">
+                Register
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/login">
+                Login
               </NavLink>
             </li>
           </ul>

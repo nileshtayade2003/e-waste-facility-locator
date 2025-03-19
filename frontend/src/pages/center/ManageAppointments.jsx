@@ -142,7 +142,7 @@ const ManageAppointments = () => {
       {/* Modal for Viewing Appointment Details */}
       {selectedAppointment && (
         <div className="modal fade" id="appointmentModal">
-          <div className="modal-dialog">
+          <div className="modal-dialog modal-lg modal-dialog-scrollable">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Appointment Details</h5>

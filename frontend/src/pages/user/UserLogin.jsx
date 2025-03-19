@@ -1,43 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useState } from "react";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/UserContext"; // Import UserContext
 
-
-
-const AdminLogin = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (localStorage.getItem('adminToken')) {
-      navigate('/admin'); // Redirect if already logged in
-    }
-  }, []);
+const UserLogin = () => {
+  const { setUser } = useContext(UserContext); // Use context for authentication
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     try {
-      const response = await axios.post('http://localhost:5000/api/admin/login', {
+      const response = await axios.post("http://localhost:5000/api/user/login", {
         email,
         password,
       });
 
-      
-      const { token } = response.data;
-
-      
+      const { token, user } = response.data;
 
       // Store token in localStorage
-      localStorage.setItem('adminToken', token);
+      localStorage.setItem("userToken", token);
 
-      // Redirect to the dashboard
-      navigate('/admin')
+      // Set user in context
+      setUser(user);
+
+      // Redirect to home page
+      navigate("/");
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || "Login failed");
     }
   };
 
@@ -45,7 +39,7 @@ const AdminLogin = () => {
     <div className="hold-transition login-page">
       <div className="login-box">
         <div className="login-logo">
-          <a href="/"><b>Admin</b>LOGIN</a>
+          <a href="/"><b>User</b> LOGIN</a>
         </div>
 
         <div className="card">
@@ -62,6 +56,7 @@ const AdminLogin = () => {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
                 <div className="input-group-append">
                   <div className="input-group-text">
@@ -77,6 +72,7 @@ const AdminLogin = () => {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
                 <div className="input-group-append">
                   <div className="input-group-text">
@@ -94,7 +90,9 @@ const AdminLogin = () => {
                 </div>
 
                 <div className="col-4">
-                  <button type="submit" className="btn btn-primary btn-block">Sign In</button>
+                  <button type="submit" className="btn btn-primary btn-block">
+                    Sign In
+                  </button>
                 </div>
               </div>
             </form>
@@ -103,7 +101,9 @@ const AdminLogin = () => {
               <a href="#">Forgot password?</a>
             </p>
             <p className="mb-0">
-              <a href="" className="text-center">Register a new account</a>
+              <Link to="/register" className="text-center">
+                Register a new account
+              </Link>
             </p>
           </div>
         </div>
@@ -112,4 +112,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default UserLogin;

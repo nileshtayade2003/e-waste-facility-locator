@@ -18,43 +18,58 @@ import ProtectedRouteAdmin from '../components/ProtectedRouteAdmin';
 import ProtectedRouteCenter from '../components/ProtectedRouteCenter';
 import Dashboard from '../pages/center/Dashboard';
 
+
+import { useState } from 'react';
+import UserLogin from '../pages/user/UserLogin';
+import RegisterUser from '../pages/user/RegisterUser';
+import { UserProvider } from '../context/UserContext';
+import Logout from '../pages/user/Logout';
+
 function AppRoutes() {
   const isAdminAuthenticated = localStorage.getItem('adminToken'); // Check admin auth
   const isCenterAuthenticated =localStorage.getItem('centerToken'); // Check center auth
 
+
+
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<HeaderFooter />}>
-          <Route index element={<UserHome />} />
-          <Route path="book-appointment/:centerId" element={<BookAppointment />} />
-          <Route path="articles" element={<Articles />} />
-        </Route>
+    <Router>  
+       <UserProvider>
+       <Routes>
+          {/* Public Routes */}
+            <Route path="/" element={<HeaderFooter />}>
+      
+              <Route index element={<UserHome />} />
+              <Route path="book-appointment/:centerId" element={<BookAppointment />} />
+              <Route path="articles" element={<Articles />} />
+              <Route path="login" element={<UserLogin />} />
+              <Route path="logout" element={<Logout />} />
+              <Route path="register" element={<RegisterUser />} />
+            </Route>
 
-        {/* Admin Panel */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<ProtectedRouteAdmin isAuth={isAdminAuthenticated} />}>
-          <Route element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="manage-users" element={<ManageUsers />} />
-            <Route path="all-centers" element={<AllCenters />} />
-            <Route path="add-center" element={<AddCenter />} />
+          {/* Admin Panel */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<ProtectedRouteAdmin isAuth={isAdminAuthenticated} />}>
+            <Route element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="manage-users" element={<ManageUsers />} />
+              <Route path="all-centers" element={<AllCenters />} />
+              <Route path="add-center" element={<AddCenter />} />
+            </Route>
           </Route>
-        </Route>
 
-        {/* E-Waste Center Panel */}
-        <Route path="/center/login" element={<CenterLogin />} />
-        <Route path="/center" element={<ProtectedRouteCenter isAuth={isCenterAuthenticated} />}>
-          <Route element={<ECenterLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="appointments" element={<ManageAppointments />} />
+          {/* E-Waste Center Panel */}
+          <Route path="/center/login" element={<CenterLogin />} />
+          <Route path="/center" element={<ProtectedRouteCenter isAuth={isCenterAuthenticated} />}>
+            <Route element={<ECenterLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="appointments" element={<ManageAppointments />} />
+            </Route>
           </Route>
-        </Route>
 
-        {/* 404 Page */}
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+          {/* 404 Page */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+       </UserProvider>
     </Router>
   );
 }

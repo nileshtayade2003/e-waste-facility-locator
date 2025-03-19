@@ -11,7 +11,7 @@ const Articles = () => {
     const getArticles =async ()=>{
       try {
         setLoading(true);
-        const response = await axios.get('https://newsapi.org/v2/everything?q=e-waste&apiKey=1d20ee841f36402c9f2f978907e3bc04')
+        const response = await axios.get('https://newsapi.org/v2/everything?q=E-waste&apiKey=1d20ee841f36402c9f2f978907e3bc04')
         setArticles(response.data.articles)
         setLoading(false);
       } catch (error) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './style.css';
 import Map from '../../components/user/Map';
 import SetMapLocation from '../../components/user/SetMapLocation';
