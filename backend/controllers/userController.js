@@ -10,6 +10,7 @@ exports.createAppointment = async (req, res) => {
     try {
         const { 
             centerId, 
+            userId, // Add userId to identify the user
             name, 
             email, 
             mobileNumber, 
@@ -22,15 +23,27 @@ exports.createAppointment = async (req, res) => {
         // Extract uploaded file path
         const productPhoto = req.file ? req.file.path : null;
 
+        // Validate required fields
+        if (!centerId || !userId || !name || !email || !mobileNumber || !address || !productName || !appointmentDate || !appointmentTime) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+
         // Check if the center exists
         const center = await Center.findById(centerId);
         if (!center) {
             return res.status(404).json({ message: 'Center not found' });
         }
 
+        // Check if the user exists (optional, if you have a User model)
+        // const user = await User.findById(userId);
+        // if (!user) {
+        //     return res.status(404).json({ message: 'User not found' });
+        // }
+
         // Create new appointment
         const appointment = new Appointment({
             center: center._id,
+            user: userId, // Save userId to identify the user
             name,
             email,
             mobileNumber,
@@ -51,6 +64,24 @@ exports.createAppointment = async (req, res) => {
     }
 };
 
+
+exports.getAppointments = async (req, res) => {
+    try {
+        const { userId } = req.query; // Get userId from query params
+        
+
+        // Fetch appointments for the user
+        const appointments = await Appointment.find({ user: userId })
+            .populate('center', 'name address') // Populate center details
+            .sort({ createdAt: -1 }); // Sort by latest first
+
+     
+        res.status(200).json(appointments);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
 
 // get all centers
 exports.getAllCenters = async (req, res) => {

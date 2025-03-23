@@ -1,20 +1,34 @@
-import React, { useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { UserContext } from '../../context/UserContext';
 
 const BookAppointment = () => {
+  const { user } = useContext(UserContext); // Get user details from context
   const { centerId } = useParams(); // Get centerId from URL
 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    mobileNumber: '',
+    name: user?.name || '', // Pre-fill name
+    email: user?.email || '', // Pre-fill email
+    mobileNumber: user?.mobile || '', // Pre-fill mobile
     address: '',
     productName: '',
     appointmentDate: '',
     appointmentTime: '',
-    productPhoto: null
+    productPhoto: null,
   });
+
+  // Update form data when user context changes
+  useEffect(() => {
+    if (user) {
+      setFormData((prevData) => ({
+        ...prevData,
+        name: user.name,
+        email: user.email,
+        mobileNumber: user.mobile,
+      }));
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,6 +43,7 @@ const BookAppointment = () => {
 
     const formDataToSend = new FormData();
     formDataToSend.append('centerId', centerId); // Add centerId
+    formDataToSend.append('userId', user._id); // Add userId to identify the user
     formDataToSend.append('name', formData.name);
     formDataToSend.append('email', formData.email);
     formDataToSend.append('mobileNumber', formData.mobileNumber);
@@ -62,41 +77,107 @@ const BookAppointment = () => {
             <div className="row">
               <div className="col-md-6 mb-3">
                 <label htmlFor="name" className="form-label">Name</label>
-                <input type="text" className="form-control" id="name" name="name" value={formData.name} onChange={handleChange} required />
+                <input
+                  type="text"
+                  className="form-control"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  readOnly // Make field read-only
+                />
               </div>
               <div className="col-md-6 mb-3">
                 <label htmlFor="email" className="form-label">Email</label>
-                <input type="email" className="form-control" id="email" name="email" value={formData.email} onChange={handleChange} required />
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  readOnly // Make field read-only
+                />
               </div>
             </div>
             <div className="row">
               <div className="col-md-6 mb-3">
                 <label htmlFor="mobileNumber" className="form-label">Mobile Number</label>
-                <input type="tel" className="form-control" id="mobileNumber" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} required />
+                <input
+                  type="tel"
+                  className="form-control"
+                  id="mobileNumber"
+                  name="mobileNumber"
+                  value={formData.mobileNumber}
+                  onChange={handleChange}
+                  required
+                  readOnly // Make field read-only
+                />
               </div>
               <div className="col-md-6 mb-3">
                 <label htmlFor="address" className="form-label">Address</label>
-                <input type="text" className="form-control" id="address" name="address" value={formData.address} onChange={handleChange} required />
+                <input
+                  type="text"
+                  className="form-control"
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                />
               </div>
             </div>
             <div className="row">
               <div className="col-md-6 mb-3">
                 <label htmlFor="productName" className="form-label">Product Name</label>
-                <input type="text" className="form-control" id="productName" name="productName" value={formData.productName} onChange={handleChange} required />
+                <input
+                  type="text"
+                  className="form-control"
+                  id="productName"
+                  name="productName"
+                  value={formData.productName}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="col-md-6 mb-3">
                 <label htmlFor="appointmentDate" className="form-label">Appointment Date</label>
-                <input type="date" className="form-control" id="appointmentDate" name="appointmentDate" value={formData.appointmentDate} onChange={handleChange} required />
+                <input
+                  type="date"
+                  className="form-control"
+                  id="appointmentDate"
+                  name="appointmentDate"
+                  value={formData.appointmentDate}
+                  onChange={handleChange}
+                  required
+                />
               </div>
             </div>
             <div className="row">
               <div className="col-md-6 mb-3">
                 <label htmlFor="appointmentTime" className="form-label">Appointment Time</label>
-                <input type="time" className="form-control" id="appointmentTime" name="appointmentTime" value={formData.appointmentTime} onChange={handleChange} required />
+                <input
+                  type="time"
+                  className="form-control"
+                  id="appointmentTime"
+                  name="appointmentTime"
+                  value={formData.appointmentTime}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="col-md-6 mb-3">
                 <label htmlFor="productPhoto" className="form-label">Upload Photo of Product</label>
-                <input type="file" className="form-control" id="productPhoto" name="productPhoto" onChange={handleFileChange} required />
+                <input
+                  type="file"
+                  className="form-control"
+                  id="productPhoto"
+                  name="productPhoto"
+                  onChange={handleFileChange}
+                  required
+                />
               </div>
             </div>
             <button type="submit" className="btn btn-primary w-100">Book Appointment</button>

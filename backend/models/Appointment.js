@@ -1,5 +1,3 @@
-
-// models/Appointment.js
 const mongoose = require('mongoose');
 
 const appointmentSchema = new mongoose.Schema({
@@ -28,6 +26,11 @@ const appointmentSchema = new mongoose.Schema({
         ref: 'Center',  // Refers to the 'Center' model
         required: true
     },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',  // Refers to the 'User' model
+        required: true
+    },
     appointmentDate: {
         type: Date,
         required: true
@@ -38,7 +41,7 @@ const appointmentSchema = new mongoose.Schema({
     },
     productPhoto: {
         type: String, // Store the image URL or file path
-        required: true
+        required: false // Make it optional
     },
     status: {
         type: String,

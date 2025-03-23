@@ -24,6 +24,7 @@ import UserLogin from '../pages/user/UserLogin';
 import RegisterUser from '../pages/user/RegisterUser';
 import { UserProvider } from '../context/UserContext';
 import Logout from '../pages/user/Logout';
+import Appointments from '../pages/user/Appointments';
 
 function AppRoutes() {
   const isAdminAuthenticated = localStorage.getItem('adminToken'); // Check admin auth
@@ -41,6 +42,7 @@ function AppRoutes() {
               <Route index element={<UserHome />} />
               <Route path="book-appointment/:centerId" element={<BookAppointment />} />
               <Route path="articles" element={<Articles />} />
+              <Route path="my-appointments" element={<Appointments />} />
               <Route path="login" element={<UserLogin />} />
               <Route path="logout" element={<Logout />} />
               <Route path="register" element={<RegisterUser />} />
