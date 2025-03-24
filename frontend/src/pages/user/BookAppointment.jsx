@@ -1,11 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from '../../context/UserContext';
 
 const BookAppointment = () => {
   const { user } = useContext(UserContext); // Get user details from context
   const { centerId } = useParams(); // Get centerId from URL
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: user?.name || '', // Pre-fill name
@@ -61,7 +62,7 @@ const BookAppointment = () => {
       });
 
       alert('Appointment booked successfully!');
-      console.log(response.data);
+      navigate('/my-appointments')
     } catch (error) {
       console.error(error);
       alert('Failed to book appointment.');

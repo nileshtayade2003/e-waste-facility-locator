@@ -1,5 +1,5 @@
 const express = require('express');
-const { getCenterAppointments, getAppointmentsByStatus } = require('../controllers/centerController');
+const { getCenterAppointments, getAppointmentsByStatus, markAppointmentCompleted, rejectAppointment } = require('../controllers/centerController');
 const { loginCenter } = require('../controllers/centerController');
 const { updateProfile } = require('../controllers/centerController');
 const { approveAppointment } = require('../controllers/centerController');
@@ -21,7 +21,9 @@ router.get('/appointments/:centerId/:status',getAppointmentsByStatus);
 router.put('/update-center/:id', upload.single('image'), updateProfile);
 
 // approve an appointment
-router.patch('/appointments/:appointmentId/approve', approveAppointment);
+router.put('/appointments/:id/approve',approveAppointment);
+router.put("/reject/:id", rejectAppointment);
+router.put("/complete/:appointmentId", markAppointmentCompleted);
 
 module.exports = router;
 

@@ -50,7 +50,7 @@ exports.getCenterAppointments = async (req, res) => {
 
   try {
     // Find all appointments for the center
-    const appointments = await Appointment.find({ center: centerId });
+    const appointments = await Appointment.find({ center: centerId }).sort({createdAt:-1});
 
     res.status(200).json({
       success: true,
@@ -149,11 +149,11 @@ exports.updateProfile = async (req, res) => {
 
 // Approve appointment
 exports.approveAppointment = async (req, res) => {
-  const { appointmentId } = req.params;
+  const { id } = req.params;
 
   try {
     // Find the appointment by its ID
-    const appointment = await Appointment.findById(appointmentId);
+    const appointment = await Appointment.findById(id);
     if (!appointment) {
       return res.status(404).json({ message: "Appointment not found" });
     }
@@ -172,7 +172,7 @@ exports.approveAppointment = async (req, res) => {
 
     // Send approval email to the user
     const userEmail = {
-      to: appointment.customerEmail, // assuming you store the user's email in appointment.userEmail
+      to: appointment.email, // assuming you store the user's email in appointment.userEmail
       subject: "Appointment Approved",
       html: `<!DOCTYPE html>
             <html lang="en">
@@ -251,7 +251,7 @@ exports.approveAppointment = async (req, res) => {
                     
                     <!-- Content -->
                     <div class="content">
-                        <p>Hello <strong>${appointment.customerName}</strong>,</p>
+                        <p>Hello <strong>${appointment.name}</strong>,</p>
                         <p>Your appointment with <strong>${center.name}</strong> has been approved. We look forward to serving you!</p>
                         
                         <div class="appointment-details">
@@ -276,9 +276,98 @@ exports.approveAppointment = async (req, res) => {
     // Use email utility to send the email
     await sendEmail(userEmail);
 
-    res.status(200).json({ message: "Appointment approved and email sent" });
+    res.status(200).json({ message: "Appointment approved and email sent",success:true });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// Reject Appointment
+exports.rejectAppointment = async (req, res) => {
+  const { id } = req.params;
+  const { rejectionReason } = req.body;
+
+  try {
+    // Find the appointment
+    const appointment = await Appointment.findById(id);
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    // Ensure it's not already rejected
+    if (appointment.status === "rejected") {
+      return res.status(400).json({ message: "Appointment is already rejected" });
+    }
+
+    const center = await Center.findById(appointment.center);
+
+    // Update the appointment status
+    appointment.status = "rejected";
+    appointment.rejectionReason = rejectionReason;
+    await appointment.save();
+
+    // Send rejection email
+    const rejectionEmail = {
+      to: appointment.email,
+      subject: "Appointment Rejected",
+      html: `
+        <p>Dear <strong>${appointment.name}</strong>,</p>
+        <p>We regret to inform you that your appointment at <strong>${center.name}</strong> has been rejected.</p>
+        <p><strong>Reason:</strong> ${rejectionReason}</p>
+        <p>If you have any questions, please contact us.</p>
+      `,
+    };
+    await sendEmail(rejectionEmail);
+
+    res.status(200).json({ message: "Appointment rejected and email sent" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Mark Appointment as Completed
+exports.markAppointmentCompleted = async (req, res) => {
+  const { appointmentId } = req.params;
+  const { amountPaid } = req.body;
+
+  try {
+    // Find the appointment
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    // Ensure it's not already completed
+    if (appointment.status === "completed") {
+      return res.status(400).json({ message: "Appointment is already completed" });
+    }
+
+    // Update appointment status and store amount paid
+    appointment.status = "completed";
+    appointment.amountPaid = amountPaid;
+    await appointment.save();
+
+    const center =await Center.findById(appointment.center)
+
+    // Send completion email
+    const completionEmail = {
+      to: appointment.email,
+      subject: "Appointment Completed",
+      html: `
+        <p>Dear <strong>${appointment.name}</strong>,</p>
+        <p>We are pleased to inform you that your appointment at <strong>${center.name}</strong> has been successfully completed.</p>
+        <p><strong>Amount Paid:</strong> ₹${amountPaid}</p>
+        <p>Thank you for choosing our service!</p>
+      `,
+    };
+    await sendEmail(completionEmail);
+
+    res.status(200).json({ message: "Appointment marked as completed and email sent" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
