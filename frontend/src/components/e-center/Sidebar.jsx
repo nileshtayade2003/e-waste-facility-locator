@@ -55,14 +55,14 @@ const Sidebar = () => {
             </li>
             <li className="nav-item">
               <Link
-                to="/customers"
-                className={`nav-link ${location.pathname === "/customers" ? "active" : ""}`}
+                to="/center/customers"
+                className={`nav-link ${location.pathname === "/center/customers" ? "active" : ""}`}
               >
                 <i className="nav-icon fas fa-users" />
                 <p>Customers</p>
               </Link>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link
                 to="/reports"
                 className={`nav-link ${location.pathname === "/reports" ? "active" : ""}`}
@@ -70,11 +70,11 @@ const Sidebar = () => {
                 <i className="nav-icon fas fa-chart-bar" />
                 <p>Reports</p>
               </Link>
-            </li>
+            </li> */}
             <li className="nav-item">
               <Link
-                to="/profile"
-                className={`nav-link ${location.pathname === "/profile" ? "active" : ""}`}
+                to="/center/settings"
+                className={`nav-link ${location.pathname === "/center/settings" ? "active" : ""}`}
               >
                 <i className="nav-icon fas fa-user-cog" />
                 <p>Profile Settings</p>

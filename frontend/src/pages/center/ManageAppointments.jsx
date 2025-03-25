@@ -13,7 +13,10 @@ const ManageAppointments = () => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [rejectReason, setRejectReason] = useState("");
   const [amountPaid, setAmountPaid] = useState("");
-  const navigate = useNavigate()
+  const [isApproving,setIsApproving] = useState(false)
+  const [isRejecting,setIsRejecting] = useState(false)
+  const [isCompleting,setIsCompleting] = useState(false)
+  
 
 
   const getCenterId = () => localStorage.getItem("centerId");
@@ -59,6 +62,8 @@ const ManageAppointments = () => {
   };
 
   const approveAppointment = async (id) => {
+    setIsApproving(true); // Show Loader
+
     try {
       const response = await axios.put(
         `http://localhost:5000/api/center/appointments/${id}/approve`
@@ -66,6 +71,7 @@ const ManageAppointments = () => {
 
       if (response.data.success) {
         updateAppointmentStatus(id, "approved");
+        setIsApproving(false); // Hide Loader
         alert("Appointment approved successfully!");
         // Close the modal
         setSelectedAppointment(null); 
@@ -75,11 +81,14 @@ const ManageAppointments = () => {
         document.querySelectorAll(".modal-backdrop").forEach((backdrop) => backdrop.remove());
       }
       else{
+        setIsApproving(false); // Hide Loader
         alert(response.data.message)
       }
     } catch (error) {
       console.error("Error approving appointment:", error);
     }
+
+    setIsApproving(false); // Hide Loader
   };
 
   const rejectAppointment = async (id) => {
@@ -88,6 +97,7 @@ const ManageAppointments = () => {
       return;
     }
 
+    setIsRejecting(true) //show loader
 
     try {
       const response = await axios.put(
@@ -96,12 +106,32 @@ const ManageAppointments = () => {
       );
 
       if (response.data.success) {
-        updateAppointmentStatus(id, "rejected", { rejectionReason });
+        updateAppointmentStatus(id, "rejected", { rejectionReason:rejectReason });
+        setIsRejecting(false) //hide loader
+        setRejectReason('')
         alert("Appointment rejected successfully!");
+
+        // ✅ Close the modal
+        setSelectedAppointment(null);
+
+        // ✅ Remove Bootstrap modal backdrop manually
+        document.body.classList.remove("modal-open"); // Enables clicking on the screen again
+        document.querySelectorAll(".modal-backdrop").forEach((backdrop) => backdrop.remove());
+
+        // ✅ Hide modal using Bootstrap’s jQuery function (if Bootstrap JS is used)
+        const rejectModal = document.getElementById("rejectModal");
+        if (rejectModal) {
+          rejectModal.classList.remove("show");
+          rejectModal.style.display = "none";
+        }
+      }else{
+        alert(response.data.message)
       }
     } catch (error) {
       console.error("Error rejecting appointment:", error);
     }
+    setIsRejecting(false) // hide loader
+    setRejectReason('')
   };
 
   const completeAppointment = async (id) => {
@@ -109,7 +139,7 @@ const ManageAppointments = () => {
       alert("Please enter an amount paid.");
       return;
     }
-    console.log(id)
+    setIsCompleting(true) //show loader
 
     try {
       const response = await axios.put(
@@ -119,18 +149,36 @@ const ManageAppointments = () => {
 
       if (response.data.success) {
         updateAppointmentStatus(id, "completed", { amountPaid });
+        setIsCompleting(false) //hide loder
         alert("Appointment marked as completed!");
+         // Close the modal
+         setSelectedAppointment(null); 
+
+         // ✅ Remove Bootstrap modal backdrop manually
+         document.body.classList.remove("modal-open"); // Removes the class that prevents clicking
+         document.querySelectorAll(".modal-backdrop").forEach((backdrop) => backdrop.remove());
+
+         // ✅ Hide modal using Bootstrap’s jQuery function (if Bootstrap JS is used)
+        const completeModal = document.getElementById("completeModal");
+        if (completeModal) {
+          completeModal.classList.remove("show");
+          completeModal.style.display = "none";
+        }
+      }else{
+        alert(response.data.message)
       }
     } catch (error) {
       console.error("Error completing appointment:", error);
     }
+    setIsCompleting(false) //hide loder
   };
 
   return (
-    <div className="card mt-5">
+    <div className="card mt-5 mb-5">
       <div className="card-header">
         <h3 className="card-title">Appointments</h3>
-      </div>
+      </div> 
+
       <div className="card-body">
         <div className="table-responsive">
           <table
@@ -282,12 +330,18 @@ const ManageAppointments = () => {
 
               {selectedAppointment?.status === "pending" && (
                 <>
-                  <button
+                  {isApproving ? (
+                    <button className="btn btn-success" disabled>
+                      <span className="spinner-border spinner-border-sm"></span> Processing...
+                    </button>
+                  ) : (
+                    <button
                     className="btn btn-success"
                     onClick={() => approveAppointment(selectedAppointment._id)}
-                  >
-                    Approve
-                  </button>
+                    >
+                      Approve
+                    </button>
+                  )}
                   <button
                     className="btn btn-danger"
                     data-toggle="modal"
@@ -311,15 +365,24 @@ const ManageAppointments = () => {
                 className="form-control"
                 placeholder="Rejection reason"
                 onChange={(e) => setRejectReason(e.target.value)}
+                disabled={isRejecting} // Disable input while loading
               ></textarea>
             </div>
             <div className="modal-footer">
-              <button
+              
+              {isRejecting ? (
+                <button className="btn btn-danger" disabled>
+                  <span className="spinner-border spinner-border-sm"></span> Processing...
+                </button>
+              ) : (
+                <button
                 className="btn btn-danger"
                 onClick={() => rejectAppointment(selectedAppointment._id)}
-              >
-                Submit
-              </button>
+                >
+                  Submit
+                </button>
+              )}
+
             </div>
           </div>
         </div>
@@ -335,15 +398,24 @@ const ManageAppointments = () => {
                 type="number"
                 className="form-control"
                 onChange={(e) => setAmountPaid(e.target.value)}
+                disabled={isCompleting} // Disable input while loading
               />
             </div>
             <div className="modal-footer">
-              <button
+
+              {isCompleting ? (
+              <button className="btn btn-primary" disabled>
+                <span className="spinner-border spinner-border-sm"></span> Processing...
+              </button>
+              ) : (
+                <button
                 className="btn btn-primary"
                 onClick={() => completeAppointment(selectedAppointment._id)}
-              >
-                Submit
-              </button>
+                >
+                  Submit
+                </button>
+              )}
+
             </div>
           </div>
         </div>

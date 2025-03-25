@@ -17,6 +17,7 @@ import ECenterLayout from '../components/e-center/ECenterLayout';
 import ProtectedRouteAdmin from '../components/ProtectedRouteAdmin';
 import ProtectedRouteCenter from '../components/ProtectedRouteCenter';
 import Dashboard from '../pages/center/Dashboard';
+import Customers from '../pages/center/Customers';
 
 
 import { useState } from 'react';
@@ -25,6 +26,7 @@ import RegisterUser from '../pages/user/RegisterUser';
 import { UserProvider } from '../context/UserContext';
 import Logout from '../pages/user/Logout';
 import Appointments from '../pages/user/Appointments';
+import Settings from '../pages/center/Settings';
 
 function AppRoutes() {
   const isAdminAuthenticated = localStorage.getItem('adminToken'); // Check admin auth
@@ -65,6 +67,8 @@ function AppRoutes() {
             <Route element={<ECenterLayout />}>
               <Route index element={<Dashboard />} />
               <Route path="appointments" element={<ManageAppointments />} />
+              <Route path="customers" element={<Customers/>} />
+              <Route path="settings" element={<Settings/>} />
             </Route>
           </Route>
 

@@ -1,16 +1,48 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/UserContext"; // Import User Context
+import { Modal, Button } from "react-bootstrap"; // Import Bootstrap Modal
 import "./style.css";
 
 const HeaderFooter = () => {
   const { user, logout } = useContext(UserContext); // Get user state and logout function
+  const [showChatbot, setShowChatbot] = useState(false); // State to toggle chatbot modal
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     navigate("/login"); // Redirect to login after logout
   };
+
+  // Inline styles
+  const chatbotButtonStyle = {
+    position: "fixed",
+    bottom: "20px",
+    right: "20px",
+    backgroundColor: "#007bff",
+    color: "white",
+    border: "none",
+    borderRadius: "50px",
+    padding: "12px 20px",
+    fontSize: "18px",
+    cursor: "pointer",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    transition: "background 0.3s ease",
+  };
+
+  // const chatbotModalStyle = {
+  //   position: "fixed",
+  //   bottom: "80px",
+  //   right: "20px",
+  //   width: "350px",
+  //   height: "500px",
+  //   backgroundColor: "white",
+  //   borderRadius: "10px",
+  //   boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+  //   display: showChatbot ? "block" : "none",
+  //   zIndex: 1000,
+  //   overflow: "hidden",
+  // };
 
   return (
     <div>
@@ -78,6 +110,42 @@ const HeaderFooter = () => {
       </nav>
 
       <Outlet />
+
+
+     
+
+
+       {/* Floating Chatbot Button */}
+       <button
+        style={chatbotButtonStyle}
+        onMouseOver={(e) => (e.target.style.backgroundColor = "#0056b3")}
+        onMouseOut={(e) => (e.target.style.backgroundColor = "#007bff")}
+        onClick={() => setShowChatbot(true)}
+      >
+        💬 Chat
+      </button>
+
+      {/* Chatbot Modal */}
+      <Modal show={showChatbot} onHide={() => setShowChatbot(false)} size="lg" centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Chatbot</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <iframe
+            src="https://cdn.botpress.cloud/webchat/v2.2/shareable.html?configUrl=https://files.bpcontent.cloud/2025/03/25/10/20250325102219-FAUK5Q8H.json"
+            width="100%"
+            height="400px"
+            style={{ border: "none" }}
+            title="Chatbot"
+          ></iframe>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowChatbot(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
 
       {/* Footer */}
       <footer className="bg-dark text-white py-4 mt-5">
