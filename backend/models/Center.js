@@ -22,11 +22,7 @@ const centerSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
-        required: true,
-        match: [
-            /^[0-9]{10}$/,
-            'Please provide a valid phone number'
-        ]
+        required: true
     },
     address: {
         type: String,

@@ -75,10 +75,21 @@ const HeaderFooter = () => {
                   Articles
                 </NavLink>
               </li>
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/products">
+                  Products
+                </NavLink>
+              </li>
+
 
               {/* Show Logout if user is logged in, else show Login/Register */}
               {user ? (
                 <>
+                  <li className="nav-item">
+                    <NavLink className="nav-link btn btn-link" to='/my-purchases'>
+                      My Purchases
+                    </NavLink>
+                  </li>
                   <li className="nav-item">
                     <a className="nav-link btn btn-link" href='/my-appointments'>
                       My Appointments

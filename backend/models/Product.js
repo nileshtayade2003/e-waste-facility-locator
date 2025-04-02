@@ -39,6 +39,15 @@ const productSchema = new mongoose.Schema({
         type: Number,
         enum: [1, 2], // 1: On Way, 2: Delivered
         default: null
+    },
+    paymentId: {
+        type: String, // Stores Razorpay payment ID
+        default: null
+    },
+    address: {
+        type: String, // Stores the delivery address
+        default: null,
+        trim: true
     }
 }, { timestamps: true });
 

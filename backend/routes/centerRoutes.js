@@ -1,5 +1,5 @@
 const express = require('express');
-const { getCenterAppointments, getAppointmentsByStatus, markAppointmentCompleted, rejectAppointment,dashboardDetails,dashboardAnalytics, getCenterCustomers, getCenterDetails, updateCenterDetails, changePassword, uploadImage } = require('../controllers/centerController');
+const { getCenterAppointments, getAppointmentsByStatus, markAppointmentCompleted, rejectAppointment,dashboardDetails,dashboardAnalytics, getCenterCustomers, getCenterDetails, updateCenterDetails, changePassword, uploadImage, createProduct, getCenterProducts } = require('../controllers/centerController');
 const { loginCenter } = require('../controllers/centerController');
 const { updateProfile } = require('../controllers/centerController');
 const { approveAppointment } = require('../controllers/centerController');
@@ -37,5 +37,12 @@ router.get('/center/:id',getCenterDetails)
 router.put('/center/:id/update',updateCenterDetails)
 router.put('/center/:id/change-password',changePassword)
 router.post('/center/:id/upload-image',upload.single('image'),uploadImage)
+
+//product related
+//add a product
+router.post('/products/create', upload.single('photo'), createProduct); // Center adds product
+//get product by center
+router.get('/products/:id', getCenterProducts); // Get products by center
+
 module.exports = router;
 

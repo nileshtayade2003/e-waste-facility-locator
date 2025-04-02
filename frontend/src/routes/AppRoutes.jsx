@@ -27,6 +27,9 @@ import { UserProvider } from '../context/UserContext';
 import Logout from '../pages/user/Logout';
 import Appointments from '../pages/user/Appointments';
 import Settings from '../pages/center/Settings';
+import CenterProductPage from '../pages/center/CenterProductPage';
+import UserProductPage from '../pages/user/UserProductPage';
+import UserPurchasesPage from '../pages/user/UserPurchasesPage';
 
 function AppRoutes() {
   const isAdminAuthenticated = localStorage.getItem('adminToken'); // Check admin auth
@@ -45,6 +48,8 @@ function AppRoutes() {
               <Route path="book-appointment/:centerId" element={<BookAppointment />} />
               <Route path="articles" element={<Articles />} />
               <Route path="my-appointments" element={<Appointments />} />
+              <Route path="products" element={<UserProductPage />} />
+              <Route path="my-purchases" element={<UserPurchasesPage />} />
               <Route path="login" element={<UserLogin />} />
               <Route path="logout" element={<Logout />} />
               <Route path="register" element={<RegisterUser />} />
@@ -68,6 +73,7 @@ function AppRoutes() {
               <Route index element={<Dashboard />} />
               <Route path="appointments" element={<ManageAppointments />} />
               <Route path="customers" element={<Customers/>} />
+              <Route path="product-master" element={<CenterProductPage/>} />
               <Route path="settings" element={<Settings/>} />
             </Route>
           </Route>

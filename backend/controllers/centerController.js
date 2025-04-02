@@ -1,6 +1,7 @@
 // controllers/centerController.js
 const Appointment = require("../models/Appointment");
 const Center = require("../models/Center");
+const Product = require('../models/Product');
 const { sendEmail } = require("../utils/email"); // Import email utility
 const { generateToken } = require("../utils/genrateToken");
 const bcrypt = require("bcryptjs");
@@ -569,5 +570,45 @@ exports.uploadImage = async (req, res) => {
   } catch (error) {
       console.error("Error uploading image:", error);
       res.status(500).json({ error: "Server error" });
+  }
+};
+
+
+// products related
+
+// @desc   Create a new product
+// @route  POST /api/products/create
+// @access Center Only
+exports.createProduct = async (req, res) => {
+  try {
+      const { name, price, centerId } = req.body;
+
+      if (!req.file) {
+          return res.status(400).json({ message: 'Product image is required' });
+      }
+
+      const product = new Product({
+          photo: req.file.path, // Store the image path from multer
+          name,
+          price,
+          centerId
+      });
+
+      await product.save();
+      res.status(201).json({ message: 'Product added successfully', product });
+  } catch (error) {
+      res.status(200).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @desc   Get all products posted by a center
+// @route  GET /api/products/center/:id
+// @access Center Only
+exports.getCenterProducts = async (req, res) => {
+  try {
+      const products = await Product.find({ centerId: req.params.id });
+      res.status(200).json(products);
+  } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

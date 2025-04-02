@@ -1,9 +1,17 @@
 // controllers/userController.js
 const Appointment = require('../models/Appointment');
 const Center = require('../models/Center');
+const Product = require('../models/Product');
 const User = require('../models/User');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Razorpay = require("razorpay");
+
+const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY,
+    key_secret: process.env.RAZORPAY_SECRET,
+  });
+  
 
 // Create a new appointment
 exports.createAppointment = async (req, res) => {
@@ -150,6 +158,64 @@ exports.loginUser = async (req, res) => {
 exports.profile = async (req, res) => {
     res.json({ user: req.user });
 };
+
+// @desc   Get all available products (Not Sold)
+// @route  GET /api/products
+// @access Public
+exports.getAvailableProducts = async (req, res) => {
+    try {
+        const products = await Product.find({ status: 0 }).populate('centerId', 'name email');
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+exports.razorpayPayment = async (req, res) => {
+    try {
+      const { amount } = req.body;
+      const options = {
+        amount,
+        currency: "INR",
+        payment_capture: 1,
+      };
+  
+      const order = await razorpay.orders.create(options);
+      res.json(order);
+    } catch (error) {
+      res.status(500).json({ error: "Error creating Razorpay order" });
+    }
+  }
+
+exports.updateOrderDetails = async (req, res) => {
+    const { productId, userId, paymentMode, status, orderStatus, paymentId,address } = req.body;
+  
+    try {
+      await Product.findByIdAndUpdate(productId, {
+        userId,
+        status,
+        paymentMode,
+        orderStatus,
+        paymentId,
+        address
+      });
+  
+      res.json({ success: true, message: "Order details updated in Product model." });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Error updating product order.", error });
+    }
+  }
+
+exports.yourPurchases = async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const purchases = await Product.find({ userId }).populate("centerId", "name email");
+      res.json(purchases);
+    } catch (error) {
+      console.error("Error fetching purchases:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
 
 
 

@@ -3,6 +3,10 @@ import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
   const location = useLocation(); // Get the current location (path)
+  const handleLogout = () => {
+    localStorage.removeItem('centerToken'); // For Center Logout
+    window.location.href = '/center/login'; // Redirect to login
+  };
 
   return (
     <aside
@@ -62,6 +66,15 @@ const Sidebar = () => {
                 <p>Customers</p>
               </Link>
             </li>
+            <li className="nav-item">
+              <Link
+                to="/center/product-master"
+                className={`nav-link ${location.pathname === "/center/product-master" ? "active" : ""}`}
+              >
+                <i className="nav-icon fas fa-boxes" />
+                <p>Product-master</p>
+              </Link>
+            </li>
             {/* <li className="nav-item">
               <Link
                 to="/reports"
@@ -81,13 +94,13 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link
-                to="/logout"
-                className={`nav-link ${location.pathname === "/logout" ? "active" : ""}`}
+              <a
+                onClick={handleLogout}
+                className={`nav-link`}
               >
                 <i className="nav-icon fas fa-sign-out-alt" />
                 <p>Logout</p>
-              </Link>
+              </a>
             </li>
           </ul>
         </nav>
